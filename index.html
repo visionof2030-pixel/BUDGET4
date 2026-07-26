@@ -197,6 +197,48 @@
         .nav-link.active i {
             color: #fff
         }
+        .sidebar-auth-box {
+            padding-top: 14px;
+            margin-top: 6px;
+            border-top: 1px dashed var(--bg-glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+        .sync-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            padding: 4px 10px 4px 4px;
+            margin: 2px 0;
+        }
+        .sync-status-badge.sync-saved {
+            color: var(--success)
+        }
+        .sync-status-badge.sync-syncing {
+            color: var(--text-muted)
+        }
+        .sync-status-badge.sync-error {
+            color: var(--danger)
+        }
+        .sync-status-badge.sync-idle {
+            color: var(--text-muted)
+        }
+        .auth-status-msg {
+            min-height: 1.2rem;
+            font-size: 0.82rem;
+            margin: 4px 2px 6px;
+        }
+        .auth-status-msg.success {
+            color: var(--success)
+        }
+        .auth-status-msg.error {
+            color: var(--danger)
+        }
+        .auth-status-msg.loading {
+            color: var(--text-muted)
+        }
         .sidebar-footer {
             padding-top: 20px;
             border-top: 1px solid var(--bg-glass-border);
@@ -910,6 +952,29 @@
         }
         .method-panel {
             padding: 12px 0
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-family: var(--font);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            touch-action: manipulation;
+            min-height: 44px
+        }
+        .auth-tab.active {
+            background: var(--accent-gradient);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(18, 60, 87, 0.20)
+        }
+        .auth-tab:hover:not(.active) {
+            background: var(--bg-card)
         }
         .parse-result {
             margin-top: 12px
@@ -1902,6 +1967,98 @@
             transition: all var(--transition);
             cursor: pointer;
         }
+        .budget-group {
+            margin-bottom: 12px;
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        .budget-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--bg-glass);
+            cursor: pointer;
+            flex-wrap: wrap;
+        }
+        .budget-group-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .budget-group-total {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .budget-group-total .toggle-icon {
+            transition: transform var(--transition);
+        }
+        .budget-group.collapsed .budget-group-total .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        .budget-group-members {
+            padding: 10px 12px 2px;
+        }
+        .budget-group.collapsed .budget-group-members {
+            display: none;
+        }
+        .budget-group-members .budget-item-card {
+            margin-right: 0;
+        }
+        .payment-status-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            font-size: 0.8rem;
+        }
+        .payment-log-btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font);
+        }
+        .payment-paid-badge {
+            color: var(--success);
+            font-weight: 700;
+        }
+        .payment-undo-btn, .payment-history-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            text-decoration: underline;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: var(--font);
+            padding: 0;
+        }
+        .installment-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 12px;
+            background: var(--bg-glass);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--bg-glass-border);
+            margin-top: 8px;
+        }
+        .installment-summary {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            padding: 8px 10px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+        }
         .budget-item-card:hover {
             box-shadow: var(--shadow-hover);
             border-color: var(--accent-light);
@@ -2351,9 +2508,24 @@
                 <a href="#" class="nav-link" data-page="temp"><i class="fas fa-umbrella-beach"></i><span>ميزانية مؤقتة</span></a>
                 <a href="#" class="nav-link" data-page="chat"><i class="fas fa-comment-dots"></i><span>المستشار المالي</span></a>
             </nav>
+            <div class="sidebar-auth-box" id="sidebarAuthBox">
+                <button id="authLoginBtn" class="nav-link" style="width:100%;">
+                    <i class="fas fa-user"></i><span>تسجيل الدخول</span>
+                </button>
+                <div id="authUserInfo" style="display:none;">
+                    <div class="nav-link" style="cursor:default;pointer-events:none;">
+                        <i class="fas fa-user-check"></i><span id="authUserEmail" style="font-size:0.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                    </div>
+                    <div id="syncStatusBadge" class="sync-status-badge sync-idle">
+                        <i class="fas fa-check-circle"></i> <span id="syncStatusText">—</span>
+                    </div>
+                    <button id="authLogoutBtn" class="nav-link" style="width:100%;">
+                        <i class="fas fa-sign-out-alt"></i><span>تسجيل الخروج</span>
+                    </button>
+                </div>
+            </div>
             <div class="sidebar-footer">
                 <button id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
-                <span class="footer-hint" id="geminiSecretTrigger">⚡ Gemini AI v2</span>
             </div>
         </aside>
 
@@ -2527,7 +2699,7 @@
                         <hr style="margin: 24px 0; border-color: var(--bg-glass-border);" />
                         <h3>إدارة البيانات</h3>
                         <button id="resetAppBtn" class="btn-danger" style="width:100%;"><i class="fas fa-trash-alt"></i> 🗑 إعادة ضبط التطبيق</button>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">سيتم حذف جميع البيانات المالية مع الاحتفاظ بمفاتيح Gemini.</p>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">سيتم حذف جميع البيانات المالية من هذا الجهاز.</p>
                     </div>
                 </section>
 
@@ -2589,6 +2761,37 @@
     </div>
 
     <!-- ===== MODALS ===== -->
+    <div id="authModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header"><h2>الحساب</h2><button class="modal-close" id="closeAuthModal">&times;</button></div>
+            <div class="modal-body">
+                <div class="method-tabs">
+                    <button class="auth-tab active" data-auth-tab="login" type="button">تسجيل الدخول</button>
+                    <button class="auth-tab" data-auth-tab="register" type="button">إنشاء حساب</button>
+                </div>
+
+                <form id="authLoginForm" class="method-panel">
+                    <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" class="form-input" required autocomplete="email" /></div>
+                    <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPassword" class="form-input" required autocomplete="current-password" /></div>
+                    <div id="loginStatusMsg" class="auth-status-msg"></div>
+                    <div class="modal-actions" style="border-top:none;padding-top:0;">
+                        <button type="submit" class="btn-primary" id="loginSubmitBtn">دخول</button>
+                    </div>
+                </form>
+
+                <form id="authRegisterForm" class="method-panel" style="display:none;">
+                    <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="registerEmail" class="form-input" required autocomplete="email" /></div>
+                    <div class="form-group"><label>كلمة المرور</label><input type="password" id="registerPassword" class="form-input" required autocomplete="new-password" minlength="6" /></div>
+                    <div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="registerConfirmPassword" class="form-input" required autocomplete="new-password" minlength="6" /></div>
+                    <div id="registerStatusMsg" class="auth-status-msg"></div>
+                    <div class="modal-actions" style="border-top:none;padding-top:0;">
+                        <button type="submit" class="btn-primary" id="registerSubmitBtn">إنشاء الحساب</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="expenseModal" class="modal">
         <div class="modal-content glass">
             <div class="modal-header"><h2>إضافة مصروف</h2><button class="modal-close" id="closeExpenseModal">&times;</button></div>
@@ -2705,7 +2908,8 @@
                 <form id="budgetItemForm" class="settings-form">
                     <div class="form-group"><label>الاسم</label><input type="text" id="budgetItemName" class="form-input" placeholder="مثال: بنزين" required /></div>
                     <div class="form-group"><label>التصنيف</label><select id="budgetItemCategory" class="form-input"></select></div>
-                    <div class="form-group"><label>الميزانية (ريال)</label><input type="number" id="budgetItemBudget" class="form-input" min="0" step="0.01" required /></div>
+                    <div class="form-group"><label>المجموعة (اختياري)</label><input type="text" id="budgetItemGroup" class="form-input" list="budgetGroupsList" placeholder="مثال: الأقساط" /><datalist id="budgetGroupsList"></datalist><span style="font-size:0.75rem; color:var(--text-muted);">اكتب نفس الاسم لعدة بنود لتجميعها معاً (مثال: كل قروضك تحت "الأقساط")، وسيظهر إجمالي المجموعة تلقائياً دون أي تكرار في أرقام البنود نفسها.</span></div>
+                    <div class="form-group"><label>الميزانية (ريال)</label><input type="number" id="budgetItemBudget" class="form-input" min="0" step="0.01" /></div>
                     <div class="form-group"><label>الأولوية</label><select id="budgetItemPriority" class="form-input"><option value="Critical">حرجة</option><option value="High" selected>عالية</option><option value="Medium">متوسطة</option><option value="Low">منخفضة</option></select></div>
                     <div class="form-group"><label>ملاحظات</label><textarea id="budgetItemNotes" class="form-textarea" rows="2" placeholder="اختياري"></textarea></div>
                     <div class="form-group" style="flex-direction:row; align-items:center; gap:10px;">
@@ -2713,7 +2917,22 @@
                         <input type="checkbox" id="budgetItemReserved" style="width:20px; height:20px; accent-color:var(--accent);" />
                         <span style="font-size:0.8rem; color:var(--text-muted);">(يُحجز المبلغ ولا يُحتسب ضمن المتاح للصرف)</span>
                     </div>
-                    <div class="form-group"><label>تاريخ انتهاء الالتزام (اختياري)</label><input type="date" id="budgetItemEndDate" class="form-input" /><span style="font-size:0.75rem; color:var(--text-muted);">مفيد لالتزامات محدودة المدة مثل تمارا/تابي — ستُنبَّه عند اقتراب الانتهاء</span></div>
+                    <div class="form-group" style="flex-direction:row; align-items:center; gap:10px;">
+                        <label style="font-weight:600; font-size:0.9rem;">التزام أقساط (تابي/تمارا/آخر)</label>
+                        <input type="checkbox" id="budgetItemIsInstallment" style="width:20px; height:20px; accent-color:var(--accent);" />
+                    </div>
+                    <div class="installment-fields" id="installmentFieldsBox" style="display:none;">
+                        <div class="form-group"><label>المزود</label><select id="installmentProvider" class="form-input">
+                            <option value="تابي">تابي</option>
+                            <option value="تمارا">تمارا</option>
+                            <option value="آخر">تقسيط آخر</option>
+                        </select></div>
+                        <div class="form-group"><label>المبلغ الإجمالي للمشتريات (ريال)</label><input type="number" id="installmentTotalAmount" class="form-input" min="0" step="0.01" /></div>
+                        <div class="form-group"><label>عدد الدفعات الكلي</label><input type="number" id="installmentTotalCount" class="form-input" min="1" step="1" /></div>
+                        <div class="form-group"><label>عدد الدفعات المدفوعة مسبقاً (اختياري)</label><input type="number" id="installmentPaidCount" class="form-input" min="0" step="1" value="0" /><span style="font-size:0.75rem; color:var(--text-muted);">إذا كان لديك التزام سبق أن سددت منه دفعة أو أكثر، أدخل عددها هنا وسيُحسب الجدول بناءً على المتبقي فقط.</span></div>
+                        <div class="installment-summary" id="installmentSummaryBox">أدخل البيانات أعلاه لعرض ملخص الدفعة الشهرية وتاريخ الانتهاء.</div>
+                    </div>
+                    <div class="form-group"><label>تاريخ انتهاء الالتزام (اختياري)</label><input type="date" id="budgetItemEndDate" class="form-input" /><span style="font-size:0.75rem; color:var(--text-muted);">مفيد لالتزامات محدودة المدة — ستُنبَّه عند اقتراب الانتهاء (يُحسب تلقائياً إذا فعّلت التزام الأقساط أعلاه)</span></div>
                     <div class="modal-actions" style="border-top:none; padding-top:0;">
                         <button type="button" class="btn-secondary" id="cancelBudgetItemBtn">إلغاء</button>
                         <button type="submit" class="btn-primary">حفظ</button>
@@ -2723,43 +2942,28 @@
         </div>
     </div>
 
-    <div id="geminiModal" class="modal">
+    <div id="paymentLogModal" class="modal">
         <div class="modal-content glass">
-            <div class="modal-header"><h2>⚙️ إعدادات Gemini AI</h2><button class="modal-close" id="closeGeminiModal">&times;</button></div>
+            <div class="modal-header"><h2 id="paymentLogModalTitle">تسجيل دفعة</h2><button class="modal-close" id="closePaymentLogModal">&times;</button></div>
             <div class="modal-body">
-                <form id="geminiSettingsForm" class="settings-form">
-                    <div class="form-group">
-                        <label for="geminiModel">نوع النموذج</label>
-                        <select id="geminiModel" class="form-input">
-                            <option value="gemini-2.5-pro" selected>Gemini 2.5 Pro</option>
-                            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                            <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
-                            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-                            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                        </select>
+                <form id="paymentLogForm" class="settings-form">
+                    <div class="form-group"><label>تاريخ الدفع</label><input type="date" id="paymentLogDate" class="form-input" required /></div>
+                    <div class="form-group"><label>المبلغ (ريال)</label><input type="number" id="paymentLogAmount" class="form-input" min="0" step="0.01" required /></div>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">هذا التسجيل توثيقي فقط لتتبع تاريخ الدفع، ولا يُخصم من المتاح للصرف مرة إضافية (البند المحجوز أصلاً محسوب ضمن الأموال المحجوزة).</span>
+                    <div class="modal-actions" style="border-top:none; padding-top:0;">
+                        <button type="button" class="btn-secondary" id="cancelPaymentLogBtn">إلغاء</button>
+                        <button type="submit" class="btn-primary">تأكيد التسجيل</button>
                     </div>
-                    <div class="form-group">
-                        <label>مفاتيح Gemini API (حتى 12 مفتاح)</label>
-                        <div class="key-input-group">
-                            <input type="password" id="geminiKeyInput" class="form-input" placeholder="أدخل مفتاح Gemini" />
-                            <button type="button" id="addKeyBtn" class="btn-primary btn-sm">إضافة</button>
-                            <button type="button" id="toggleKeysVisibility" class="btn-secondary btn-sm">إظهار</button>
-                        </div>
-                        <div id="keysList" class="keys-container"></div>
-                        <div id="keyCounter" class="key-counter">0 / 12 مفتاح</div>
-                        <small class="form-hint">يتم توزيع الطلبات بشكل دائري على المفاتيح النشطة.</small>
-                        <div style="margin-top:8px;padding:10px 12px;background:var(--bg-glass);border-radius:var(--radius-sm);border-right:3px solid var(--warning);font-size:0.78rem;color:var(--text-secondary);">
-                            ⚠️ <strong>تنبيه أمني:</strong> تُحفظ المفاتيح داخل متصفحك فقط (localStorage) بدون تشفير. لا تستخدم هذه الميزة على جهاز مشترك أو عام، ولا تشارك رابط هذا التطبيق مع مفاتيحك المحفوظة فيه مع أي شخص آخر.
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>المفتاح النشط حالياً</label>
-                        <div id="activeKeyDisplay" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-secondary);padding:8px 12px;background:var(--bg-glass);border-radius:var(--radius-sm);border:1px solid var(--bg-glass-border);">لا يوجد مفتاح نشط</div>
-                    </div>
-                    <button type="submit" class="btn-primary">حفظ الإعدادات</button>
                 </form>
-                <div id="geminiStatus" class="api-status" style="margin-top:12px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="paymentHistoryModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header"><h2 id="paymentHistoryModalTitle">سجل الدفعات</h2><button class="modal-close" id="closePaymentHistoryModal">&times;</button></div>
+            <div class="modal-body">
+                <div id="paymentHistoryContent"></div>
             </div>
         </div>
     </div>
@@ -2805,6 +3009,437 @@
         <span class="fab-advisor-icon"><i class="fas fa-comment-dots"></i></span>
         <span class="fab-advisor-label">المستشار</span>
     </button>
+
+    <!-- Supabase JS SDK (المرحلة 1: الاتصال فقط) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+/**
+ * ============================================================
+ * Supabase Client — ملف الاتصال فقط
+ * ============================================================
+ * هذا الملف مسؤول حصراً عن إنشاء وإدارة الاتصال بـ Supabase.
+ * لا يحتوي على أي Business Logic أو استعلامات بيانات — تلك تُضاف
+ * لاحقاً في مراحل منفصلة (Auth، Sync، ... إلخ).
+ *
+ * ملاحظة حول Environment Variables:
+ * هذا المشروع عبارة عن صفحة HTML واحدة بدون أداة بناء (لا يوجد
+ * package.json ولا Vite/Webpack ولا خادم Node). لذلك لا تتوفر آلية
+ * حقيقية لمتغيرات البيئة (.env / process.env) في المتصفح مباشرة.
+ * تم اعتماد الحل التالي:
+ *   1) القيم موضوعة كثوابت أدناه (Publishable Key مصمم أصلاً ليكون
+ *      علنياً وآمناً على الواجهة الأمامية، تماماً مثل مفاتيح Firebase
+ *      العامة — الحماية الفعلية تتم عبر Row Level Security في Supabase).
+ *   2) تم دعم قراءة القيم من window.__SUPABASE_ENV__ إن وُجدت، حتى
+ *      يسهل لاحقاً حقنها من أي أداة بناء أو خادم بدون تعديل هذا الملف.
+ */
+(function (global) {
+    'use strict';
+
+    const ENV = global.__SUPABASE_ENV__ || {};
+
+    const SUPABASE_URL = ENV.SUPABASE_URL || 'https://elgjznfkkxsejxqnbhrz.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = ENV.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_ovAztgGDLOOAotSbBNEq7Q_9UHG90T0';
+
+    // نسخة واحدة فقط من العميل (Singleton) — منع تكرار الاتصال
+    let _clientInstance = null;
+
+    const SupabaseClient = {
+        /**
+         * يرجع نسخة واحدة فقط من عميل Supabase.
+         * أي استدعاء لاحق يعيد نفس النسخة بدل إنشاء اتصال جديد.
+         */
+        getClient() {
+            if (_clientInstance) {
+                return _clientInstance;
+            }
+
+            if (typeof global.supabase === 'undefined' || typeof global.supabase.createClient !== 'function') {
+                console.error('[SupabaseClient] مكتبة Supabase JS غير محمّلة. تأكد من إضافة CDN قبل هذا الملف.');
+                return null;
+            }
+
+            if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+                console.error('[SupabaseClient] SUPABASE_URL أو SUPABASE_PUBLISHABLE_KEY غير معرّفة.');
+                return null;
+            }
+
+            _clientInstance = global.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+                auth: {
+                    persistSession: true,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: false
+                }
+            });
+
+            return _clientInstance;
+        },
+
+        /** هل تم ضبط بيانات الاتصال؟ */
+        isConfigured() {
+            return !!(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+        },
+
+        /**
+         * اختبار خفيف للتأكد من الوصول الفعلي لمشروع Supabase.
+         * يستخدم نقطة فحص صحة Auth (لا يلمس أي جدول بيانات ولا يحتاج تسجيل دخول).
+         * يرجع: { success: boolean, error?: string }
+         */
+        async testConnection() {
+            const client = this.getClient();
+            if (!client) {
+                return { success: false, error: 'تعذر إنشاء عميل Supabase (تحقق من تحميل المكتبة والمفاتيح).' };
+            }
+            try {
+                const response = await fetch(SUPABASE_URL + '/auth/v1/health', {
+                    method: 'GET',
+                    headers: { apikey: SUPABASE_PUBLISHABLE_KEY }
+                });
+                if (!response.ok) {
+                    return { success: false, error: 'استجابة غير متوقعة من Supabase (HTTP ' + response.status + ')' };
+                }
+                return { success: true };
+            } catch (err) {
+                return { success: false, error: (err && err.message) || 'تعذر الوصول إلى الشبكة' };
+            }
+        }
+    };
+
+    global.SupabaseClient = SupabaseClient;
+
+})(window);
+
+    </script>
+
+    <script>
+/**
+ * ============================================================
+ * Auth Service — طبقة المصادقة (Supabase Auth)
+ * ============================================================
+ * يعتمد حصراً على SupabaseClient.getClient() (نفس العميل الوحيد
+ * من المرحلة 1) — لا يُنشئ أي اتصال جديد.
+ * هذا الملف مسؤول فقط عن: تسجيل حساب / دخول / خروج / الجلسة /
+ * متابعة تغيّر حالة المستخدم. لا يحتوي على أي منطق خاص بالمصروفات
+ * أو بيانات التطبيق (ذلك يُضاف في مراحل لاحقة).
+ */
+(function (global) {
+    'use strict';
+
+    function getClient() {
+        if (typeof global.SupabaseClient === 'undefined') {
+            console.error('[AuthService] SupabaseClient غير متوفر. تأكد من تحميل supabaseClient.js أولاً.');
+            return null;
+        }
+        return global.SupabaseClient.getClient();
+    }
+
+    /** ترجمة أخطاء Supabase الشائعة إلى رسائل عربية مفهومة */
+    function translateError(err) {
+        const msg = (err && err.message) || '';
+        const map = {
+            'Invalid login credentials': 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+            'User already registered': 'هذا البريد الإلكتروني مسجّل مسبقاً',
+            'Password should be at least 6 characters': 'كلمة المرور يجب ألا تقل عن 6 أحرف',
+            'Email not confirmed': 'الرجاء تأكيد البريد الإلكتروني أولاً',
+            'Failed to fetch': 'تعذر الاتصال بالخادم، تحقق من اتصال الإنترنت'
+        };
+        return map[msg] || msg || 'حدث خطأ غير متوقع';
+    }
+
+    const AuthService = {
+        async signUp(email, password) {
+            const client = getClient();
+            if (!client) return { success: false, error: 'تعذر الاتصال بخدمة المصادقة' };
+            try {
+                const { data, error } = await client.auth.signUp({ email, password });
+                if (error) return { success: false, error: translateError(error) };
+                return { success: true, data };
+            } catch (err) {
+                return { success: false, error: translateError(err) };
+            }
+        },
+
+        async signIn(email, password) {
+            const client = getClient();
+            if (!client) return { success: false, error: 'تعذر الاتصال بخدمة المصادقة' };
+            try {
+                const { data, error } = await client.auth.signInWithPassword({ email, password });
+                if (error) return { success: false, error: translateError(error) };
+                return { success: true, data };
+            } catch (err) {
+                return { success: false, error: translateError(err) };
+            }
+        },
+
+        async signOut() {
+            const client = getClient();
+            if (!client) return { success: false, error: 'تعذر الاتصال بخدمة المصادقة' };
+            try {
+                const { error } = await client.auth.signOut();
+                if (error) return { success: false, error: translateError(error) };
+                return { success: true };
+            } catch (err) {
+                return { success: false, error: translateError(err) };
+            }
+        },
+
+        /** يرجع الجلسة الحالية إن وُجدت (لمتابعة حالة المستخدم عند فتح التطبيق) */
+        async getSession() {
+            const client = getClient();
+            if (!client) return null;
+            try {
+                const { data, error } = await client.auth.getSession();
+                if (error || !data) return null;
+                return data.session || null;
+            } catch (err) {
+                return null;
+            }
+        },
+
+        async getCurrentUser() {
+            const session = await this.getSession();
+            return session ? session.user : null;
+        },
+
+        /** الاستماع لتغيّر حالة المصادقة (دخول/خروج/تحديث الجلسة) */
+        onAuthStateChange(callback) {
+            const client = getClient();
+            if (!client) return null;
+            const { data } = client.auth.onAuthStateChange((event, session) => {
+                callback(event, session);
+            });
+            return data ? data.subscription : null;
+        }
+    };
+
+    global.AuthService = AuthService;
+
+})(window);
+
+    </script>
+
+    <script>
+/**
+ * ============================================================
+ * Data Sync — ربط بيانات التطبيق المحلية بجدول user_data
+ * ============================================================
+ * المسؤولية فقط: سحب بيانات المستخدم بعد تسجيل الدخول، ورفع أي
+ * تعديل محلي جديد إلى Supabase. لا يحتوي على أي منطق مالي —
+ * ذلك يبقى بالكامل داخل FinancialEngine كما هو.
+ *
+ * التصميم:
+ * - نفس أسلوب ميزة "النسخ الاحتياطي" الموجودة أصلاً في التطبيق:
+ *   كل المفاتيح التي تبدأ بـ ai_budget_ تُجمع في كائن JSON واحد
+ *   ويُخزَّن في عمود `data` بجدول user_data (صف واحد لكل مستخدم).
+ * - البيانات المحلية تبقى دائماً كما هي ولا تُحذف أبداً من هذه
+ *   الطبقة؛ الاستثناء الوحيد هو الاستعادة الصريحة عند تسجيل الدخول
+ *   (سحب بيانات الحساب من السحابة)، وهو سلوك مقصود لدعم تعدد الأجهزة.
+ *
+ * ⚠️ مهم جداً (يلزم تنفيذه من طرفكم داخل Supabase):
+ * لضمان وصول كل مستخدم إلى بياناته فقط، يجب تفعيل Row Level
+ * Security على جدول user_data مع سياسات تعتمد على auth.uid().
+ * راجعوا التقرير المرفق للسكربت الجاهز.
+ */
+(function (global) {
+    'use strict';
+
+    const TABLE = 'user_data';
+    let pushTimer = null;
+
+    function getClient() {
+        if (typeof global.SupabaseClient === 'undefined') return null;
+        return global.SupabaseClient.getClient();
+    }
+
+    /** يجمع كل بيانات التطبيق المحلية (نفس أسلوب ميزة النسخ الاحتياطي الحالية) */
+    function collectLocalData() {
+        const data = {};
+        Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith('ai_budget_')) {
+                const raw = localStorage.getItem(key);
+                try {
+                    data[key.replace('ai_budget_', '')] = JSON.parse(raw);
+                } catch (e) {
+                    data[key.replace('ai_budget_', '')] = raw;
+                }
+            }
+        });
+        return data;
+    }
+
+    /** يكتب بيانات مستلمة من السحابة داخل localStorage (نفس أسلوب ميزة الاستيراد الحالية) */
+    function restoreLocalData(data) {
+        if (!data || typeof data !== 'object') return;
+        Object.entries(data).forEach(([key, value]) => {
+            localStorage.setItem('ai_budget_' + key, JSON.stringify(value));
+        });
+    }
+
+    const DataSync = {
+        status: 'idle', // idle | syncing | saved | error
+        _authenticated: false,
+        _pushInFlight: false,
+        _pushQueued: false,
+        _pendingPush: false,
+        _listeners: [],
+
+        isAuthenticated() {
+            return this._authenticated;
+        },
+        setAuthenticated(val) {
+            this._authenticated = !!val;
+        },
+
+        /** اشتراك اختياري لمتابعة حالة المزامنة (سيُستخدم في المرحلة 5 لعرضها بالواجهة) */
+        onStatusChange(fn) {
+            this._listeners.push(fn);
+        },
+        _setStatus(s) {
+            this.status = s;
+            this._listeners.forEach((fn) => {
+                try { fn(s); } catch (e) { /* تجاهل أخطاء المستمعين */ }
+            });
+        },
+
+        /** سحب بيانات المستخدم من Supabase بعد تسجيل الدخول */
+        async pullFromCloud() {
+            const client = getClient();
+            if (!client) return { success: false, error: 'لا يوجد اتصال بـ Supabase' };
+            if (typeof AuthService === 'undefined') return { success: false, error: 'خدمة المصادقة غير متاحة' };
+
+            const user = await AuthService.getCurrentUser();
+            if (!user) return { success: false, error: 'المستخدم غير مسجل الدخول' };
+
+            this._setStatus('syncing');
+            try {
+                const { data: rows, error } = await client
+                    .from(TABLE)
+                    .select('id, data')
+                    .eq('user_id', user.id)
+                    .limit(1);
+
+                if (error) {
+                    this._setStatus('error');
+                    return { success: false, error: error.message };
+                }
+
+                if (rows && rows.length > 0) {
+                    restoreLocalData(rows[0].data);
+                    if (typeof FinancialEngine !== 'undefined') FinancialEngine.refreshAll();
+                    this._setStatus('saved');
+                    return { success: true, hadCloudData: true };
+                }
+
+                // لا توجد بيانات سحابية بعد لهذا المستخدم — نرفع بياناته المحلية الحالية لتكون البداية
+                const pushResult = await this.pushToCloud();
+                return { success: pushResult.success, hadCloudData: false, error: pushResult.error };
+            } catch (err) {
+                this._setStatus('error');
+                return { success: false, error: (err && err.message) || 'خطأ غير متوقع' };
+            }
+        },
+
+        /** رفع/تحديث بيانات المستخدم الحالية في Supabase */
+        async pushToCloud() {
+            // منع تنفيذ أكثر من عملية رفع في نفس اللحظة (تفادي تكرار البيانات)
+            if (this._pushInFlight) {
+                this._pushQueued = true;
+                return { success: true, queued: true };
+            }
+
+            const client = getClient();
+            if (!client) return { success: false, error: 'لا يوجد اتصال بـ Supabase' };
+            if (typeof AuthService === 'undefined') return { success: false, error: 'خدمة المصادقة غير متاحة' };
+
+            const user = await AuthService.getCurrentUser();
+            if (!user) return { success: false, error: 'المستخدم غير مسجل الدخول' };
+
+            // التعامل مع انقطاع الإنترنت: لا نحاول الاتصال، ونجدول إعادة المحاولة تلقائياً عند عودته
+            if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+                this._pendingPush = true;
+                this._setStatus('error');
+                return { success: false, error: 'لا يوجد اتصال بالإنترنت — سيتم الحفظ تلقائياً عند عودة الاتصال' };
+            }
+
+            this._pushInFlight = true;
+            this._setStatus('syncing');
+            try {
+                const payload = collectLocalData();
+
+                const { data: existing, error: selErr } = await client
+                    .from(TABLE)
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .limit(1);
+
+                if (selErr) {
+                    this._handlePushFailure(selErr);
+                    return { success: false, error: selErr.message };
+                }
+
+                let writeError = null;
+                if (existing && existing.length > 0) {
+                    const { error } = await client
+                        .from(TABLE)
+                        .update({ data: payload, updated_at: new Date().toISOString() })
+                        .eq('id', existing[0].id)
+                        .eq('user_id', user.id);
+                    writeError = error;
+                } else {
+                    const { error } = await client
+                        .from(TABLE)
+                        .insert({ user_id: user.id, data: payload });
+                    writeError = error;
+                }
+
+                if (writeError) {
+                    this._handlePushFailure(writeError);
+                    return { success: false, error: writeError.message };
+                }
+
+                this._setStatus('saved');
+                return { success: true };
+            } catch (err) {
+                this._handlePushFailure(err);
+                return { success: false, error: (err && err.message) || 'تعذر الحفظ في Supabase' };
+            } finally {
+                this._pushInFlight = false;
+                if (this._pushQueued) {
+                    this._pushQueued = false;
+                    this.pushToCloud();
+                }
+            }
+        },
+
+        /** معالجة موحّدة لفشل الرفع: تحديث الحالة، وجدولة إعادة محاولة تلقائية إن كان السبب انقطاع الشبكة */
+        _handlePushFailure(err) {
+            this._setStatus('error');
+            const offline = (typeof navigator !== 'undefined' && navigator.onLine === false) ||
+                (err && /fetch|network/i.test(err.message || ''));
+            if (offline) this._pendingPush = true;
+        },
+
+        /** رفع مؤجَّل (Debounce) — يُستدعى تلقائياً من Storage.set عند أي تعديل محلي */
+        schedulePush() {
+            if (pushTimer) clearTimeout(pushTimer);
+            pushTimer = setTimeout(() => { this.pushToCloud(); }, 1200);
+        }
+    };
+
+    // إعادة المحاولة تلقائياً فور عودة الاتصال بالإنترنت
+    if (typeof global.addEventListener === 'function') {
+        global.addEventListener('online', () => {
+            if (DataSync._pendingPush && DataSync.isAuthenticated()) {
+                DataSync._pendingPush = false;
+                DataSync.pushToCloud();
+            }
+        });
+    }
+
+    global.DataSync = DataSync;
+
+})(window);
+
+    </script>
 
     <script>
         // ============================================================
@@ -2956,7 +3591,10 @@
         const Storage = {
             get(key, def) { try { const val = localStorage.getItem('ai_budget_' + key); return val ? JSON.parse(val) :
                         def; } catch { return def; } },
-            set(key, val) { localStorage.setItem('ai_budget_' + key, JSON.stringify(val)); },
+            set(key, val) {
+                localStorage.setItem('ai_budget_' + key, JSON.stringify(val));
+                if (typeof DataSync !== 'undefined' && DataSync.isAuthenticated()) DataSync.schedulePush();
+            },
             remove(key) { localStorage.removeItem('ai_budget_' + key); },
             getExpenses() { return this.get('expenses', []); },
             setExpenses(exp) { this.set('expenses', exp); },
@@ -2965,12 +3603,6 @@
                 return this.get('settings', def);
             },
             setSettings(s) { this.set('settings', s); },
-            getGeminiKeys() { return this.get('gemini_keys', []); },
-            setGeminiKeys(keys) { this.set('gemini_keys', keys); },
-            getGeminiModel() { return this.get('gemini_model', 'gemini-2.5-pro'); },
-            setGeminiModel(model) { this.set('gemini_model', model); },
-            getGeminiKeyIndex() { return this.get('gemini_key_index', 0); },
-            setGeminiKeyIndex(idx) { this.set('gemini_key_index', idx); },
             getBudgetItems() { return this.get('budget_items', []); },
             setBudgetItems(items) { this.set('budget_items', items); },
             getTravelBudget() { const def = { enabled: false, tripName: '', totalBudget: 0, categoryBudgets: {} }; return this
@@ -3229,6 +3861,7 @@
                     id: Utils.generateId(),
                     name: data.name || 'بند جديد',
                     category: data.category || 'أخرى',
+                    group: data.group || null,
                     budget: parseFloat(data.budget) || 0,
                     spent: 0,
                     isReserved: data.isReserved === true,
@@ -3238,6 +3871,7 @@
                     notes: data.notes || '',
                     isAutoCreated: data.isAutoCreated || false,
                     endDate: data.endDate || null,
+                    paymentHistory: [],
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 };
@@ -3306,10 +3940,48 @@
                 }
 
                 items.forEach(item => {
-                    item.spent = catMap[item.category] || 0;
+                    if (item.isReserved) {
+                        // بند محجوز = التزام ثابت يُدفع بالكامل كل شهر، لا يعتمد على مطابقة التصنيف
+                        item.spent = item.budget;
+                    } else {
+                        item.spent = catMap[item.category] || 0;
+                    }
                 });
 
                 Storage.setBudgetItems(items);
+            },
+
+            recordItemPayment(id, date, amount) {
+                let items = this.getBudgetItems();
+                const item = items.find(i => i.id === id);
+                if (!item) return null;
+                if (!Array.isArray(item.paymentHistory)) item.paymentHistory = [];
+                item.paymentHistory.push({ date, amount: parseFloat(amount) || item.budget });
+                item.paymentHistory.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+                Storage.setBudgetItems(items);
+                return item;
+            },
+
+            undoLastPaymentThisMonth(id) {
+                let items = this.getBudgetItems();
+                const item = items.find(i => i.id === id);
+                if (!item || !Array.isArray(item.paymentHistory)) return null;
+                const monthPrefix = Utils.today().slice(0, 7);
+                const idx = [...item.paymentHistory].reverse().findIndex(p => (p.date || '').startsWith(
+                    monthPrefix));
+                if (idx === -1) return null;
+                const realIdx = item.paymentHistory.length - 1 - idx;
+                item.paymentHistory.splice(realIdx, 1);
+                Storage.setBudgetItems(items);
+                return item;
+            },
+
+            getPaymentThisMonth(item) {
+                if (!item || !Array.isArray(item.paymentHistory)) return null;
+                const monthPrefix = Utils.today().slice(0, 7);
+                const monthPayments = item.paymentHistory.filter(p => (p.date || '').startsWith(monthPrefix));
+                if (monthPayments.length === 0) return null;
+                return monthPayments[monthPayments.length - 1];
             },
 
             cleanupAutoCreatedItems() {
@@ -3399,7 +4071,7 @@
             },
 
             resetApp() {
-                const keysToKeep = ['gemini_keys', 'gemini_model', 'gemini_key_index', 'migrated_v2'];
+                const keysToKeep = ['migrated_v2'];
                 const allKeys = Object.keys(localStorage);
                 allKeys.forEach(key => {
                     if (key.startsWith('ai_budget_')) {
@@ -4320,65 +4992,31 @@
         };
 
         // ============================================================
-        // 7. GEMINI (محسّن مع استغلال المفاتيح الـ12 وتحليل النص)
+        // 7. GEMINI (الاتصال يتم فقط عبر Supabase Edge Function "gemini-analysis")
         // ============================================================
         const Gemini = {
-            getKeys() { return Storage.getGeminiKeys(); },
-            getModel() { return Storage.getGeminiModel(); },
-            getCurrentKey() {
-                const keys = this.getKeys();
-                if (keys.length === 0) return null;
-                const index = Storage.getGeminiKeyIndex() % keys.length;
-                return keys[index];
-            },
-            rotateKey() {
-                const keys = this.getKeys();
-                if (keys.length === 0) return null;
-                const currentIndex = Storage.getGeminiKeyIndex();
-                const newIndex = (currentIndex + 1) % keys.length;
-                Storage.setGeminiKeyIndex(newIndex);
-                return keys[newIndex];
-            },
+            // كل الاتصال بـ Gemini أصبح يمر حصرياً عبر Supabase Edge Function باسم "gemini-analysis".
+            // لا يوجد أي مفتاح API ولا أي اتصال مباشر بـ Google داخل الواجهة الأمامية.
+            // إدارة المفاتيح ودورانها (Key Rotation) ونوع النموذج (gemini-2.5-flash-lite)
+            // أصبحت بالكامل من مسؤولية الـ Edge Function على الخادم.
             async sendRequest(prompt, history) {
-                const key = this.getCurrentKey();
-                if (!key) throw new Error('لا يوجد مفتاح Gemini نشط. أضف مفتاحاً من خلال النقر على "Gemini AI v2" في الفوتر.');
-                const model = this.getModel();
-                const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' +
-                    key;
-                const contents = [];
-                if (Array.isArray(history) && history.length > 0) {
-                    history.forEach(turn => {
-                        contents.push({ role: turn.role === 'user' ? 'user' : 'model', parts: [{ text: turn.text }] });
-                    });
+                const client = (typeof SupabaseClient !== 'undefined') ? SupabaseClient.getClient() : null;
+                if (!client) {
+                    throw new Error('تعذر الاتصال بخدمة التحليل (Supabase). تحقق من الاتصال بالإنترنت.');
                 }
-                contents.push({ role: 'user', parts: [{ text: prompt }] });
-                const payload = {
-                    contents: contents,
-                    generationConfig: { temperature: 0.5, maxOutputTokens: 2048, topP: 0.95 }
-                };
                 try {
-                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload) });
-                    if (response.status === 429 || response.status === 403 || response.status === 401) {
-                        const newKey = this.rotateKey();
-                        if (newKey) {
-                            const retryUrl = 'https://generativelanguage.googleapis.com/v1beta/models/' + model +
-                                ':generateContent?key=' + newKey;
-                            const retryResponse = await fetch(retryUrl, { method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(
-                                    payload) });
-                            if (retryResponse.ok) { const data = await retryResponse.json(); return data.candidates?.[0]
-                                    ?.content?.parts?.[0]?.text || ''; }
-                        }
-                        throw new Error('تم استنفاذ جميع المفاتيح أو بعضها غير صالح.');
+                    const { data, error } = await client.functions.invoke('gemini-analysis', {
+                        body: { prompt: prompt, history: Array.isArray(history) ? history : [] }
+                    });
+                    if (error) {
+                        throw new Error(error.message || 'خطأ في الاتصال بخدمة التحليل');
                     }
-                    if (!response.ok) { const errData = await response.json(); throw new Error(errData.error?.message ||
-                            'خطأ في الاتصال بـ Gemini'); }
-                    const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    if (!data || typeof data.text !== 'string') {
+                        throw new Error('رد غير صالح من خدمة التحليل');
+                    }
+                    return data.text;
                 } catch (e) {
-                    this.rotateKey();
-                    throw new Error(e.message || 'فشل الاتصال بـ Gemini');
+                    throw new Error(e.message || 'فشل الاتصال بخدمة التحليل');
                 }
             },
 
@@ -5988,7 +6626,6 @@
             financialContext: null,
             selectedPreset: null,
             overrideData: null,
-            installmentFlow: null,
 
             init() {
                 migrateToBudgetItems();
@@ -5996,6 +6633,7 @@
                 FinancialEngine.syncBudgetItemsSpent();
 
                 this.chatMessages = Utils.id('chatMessages');
+                this.setupAuth();
                 this.setupTheme();
                 this.setupNavigation();
                 this.setupSidebar();
@@ -6004,7 +6642,6 @@
                 this.setupSettings();
                 this.setupAnalytics();
                 this.setupSetupWizard();
-                this.setupGeminiModal();
                 this.setupChat();
                 this.setupQuickExpenseModal();
                 this.setupTravel();
@@ -6017,6 +6654,7 @@
                 this.setupModalClose('reservedMoneyModal', 'closeReservedMoneyModal', null);
                 this.setupModalClose('monthExpensesModal', 'closeMonthExpensesModal', null);
                 this.setupBudgetItems();
+                this.setupPaymentLogModal();
                 this.setupResetApp();
                 this.setupBackup();
                 this.setupCoach();
@@ -6132,6 +6770,172 @@
                 Utils.on(modal, 'click', (e) => {
                     if (e.target === modal) closeModal();
                 });
+            },
+
+            setupAuth() {
+                const modalId = 'authModal';
+                this.setupModalClose(modalId, 'closeAuthModal', null);
+
+                const loginBtn = Utils.id('authLoginBtn');
+                const logoutBtn = Utils.id('authLogoutBtn');
+                const userInfoBox = Utils.id('authUserInfo');
+                const userEmailEl = Utils.id('authUserEmail');
+                const loginForm = Utils.id('authLoginForm');
+                const registerForm = Utils.id('authRegisterForm');
+                const authTabs = Utils.qsa('.auth-tab');
+
+                if (!loginBtn || !loginForm || !registerForm) return;
+
+                Utils.on(loginBtn, 'click', () => this.openModal(modalId));
+
+                authTabs.forEach(tab => {
+                    Utils.on(tab, 'click', () => {
+                        authTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        const target = tab.dataset.authTab;
+                        loginForm.style.display = target === 'login' ? 'block' : 'none';
+                        registerForm.style.display = target === 'register' ? 'block' : 'none';
+                        Utils.id('loginStatusMsg').textContent = '';
+                        Utils.id('registerStatusMsg').textContent = '';
+                    });
+                });
+
+                const setStatus = (el, text, type) => {
+                    if (!el) return;
+                    el.textContent = text;
+                    el.className = 'auth-status-msg' + (type ? ' ' + type : '');
+                };
+
+                // شارة حالة المزامنة (المرحلة 5): Saved / Syncing / Error
+                const syncBadge = Utils.id('syncStatusBadge');
+                const syncText = Utils.id('syncStatusText');
+                const renderSyncStatus = (status) => {
+                    if (!syncBadge || !syncText) return;
+                    const map = {
+                        idle: { text: 'بانتظار المزامنة', icon: 'fa-circle-notch', cls: 'sync-idle' },
+                        syncing: { text: 'جارٍ الحفظ...', icon: 'fa-spinner fa-spin', cls: 'sync-syncing' },
+                        saved: { text: 'تم الحفظ', icon: 'fa-check-circle', cls: 'sync-saved' },
+                        error: { text: 'تعذر الحفظ', icon: 'fa-exclamation-triangle', cls: 'sync-error' }
+                    };
+                    const s = map[status] || map.idle;
+                    syncBadge.className = 'sync-status-badge ' + s.cls;
+                    syncBadge.querySelector('i').className = 'fas ' + s.icon;
+                    syncText.textContent = s.text;
+                };
+                if (typeof DataSync !== 'undefined') {
+                    DataSync.onStatusChange(renderSyncStatus);
+                    renderSyncStatus(DataSync.status);
+                }
+
+                const setUIForUser = (user) => {
+                    if (!loginBtn || !userInfoBox) return;
+                    if (user) {
+                        loginBtn.style.display = 'none';
+                        userInfoBox.style.display = 'block';
+                        if (userEmailEl) userEmailEl.textContent = user.email || '';
+                    } else {
+                        loginBtn.style.display = 'flex';
+                        userInfoBox.style.display = 'none';
+                        if (userEmailEl) userEmailEl.textContent = '';
+                    }
+                };
+
+                // متابعة حالة المستخدم عند فتح التطبيق ثم عند أي تغيّر لاحق
+                if (typeof AuthService !== 'undefined') {
+                    AuthService.getCurrentUser().then(user => {
+                        setUIForUser(user);
+                        if (typeof DataSync !== 'undefined') {
+                            DataSync.setAuthenticated(!!user);
+                            if (user) DataSync.pullFromCloud();
+                        }
+                    }).catch(() => setUIForUser(null));
+
+                    AuthService.onAuthStateChange((event, session) => {
+                        const user = session ? session.user : null;
+                        setUIForUser(user);
+                        if (typeof DataSync !== 'undefined') {
+                            DataSync.setAuthenticated(!!user);
+                            if (event === 'SIGNED_IN') DataSync.pullFromCloud();
+                        }
+                    });
+                }
+
+                // تسجيل الدخول
+                Utils.on(loginForm, 'submit', async (e) => {
+                    e.preventDefault();
+                    const email = Utils.id('loginEmail').value.trim();
+                    const password = Utils.id('loginPassword').value;
+                    const statusEl = Utils.id('loginStatusMsg');
+                    const submitBtn = Utils.id('loginSubmitBtn');
+                    if (!email || !password) { setStatus(statusEl, 'الرجاء تعبئة جميع الحقول', 'error'); return; }
+                    if (typeof AuthService === 'undefined') { setStatus(statusEl, 'خدمة المصادقة غير متاحة', 'error'); return; }
+
+                    submitBtn.disabled = true;
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'جارٍ الدخول...';
+                    setStatus(statusEl, 'جارٍ التحقق من البيانات...', 'loading');
+
+                    const result = await AuthService.signIn(email, password);
+
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+
+                    if (result.success) {
+                        setStatus(statusEl, 'تم تسجيل الدخول بنجاح', 'success');
+                        setTimeout(() => {
+                            this.closeModal(modalId);
+                            loginForm.reset();
+                            statusEl.textContent = '';
+                        }, 900);
+                    } else {
+                        setStatus(statusEl, result.error, 'error');
+                    }
+                });
+
+                // إنشاء حساب
+                Utils.on(registerForm, 'submit', async (e) => {
+                    e.preventDefault();
+                    const email = Utils.id('registerEmail').value.trim();
+                    const password = Utils.id('registerPassword').value;
+                    const confirmPassword = Utils.id('registerConfirmPassword').value;
+                    const statusEl = Utils.id('registerStatusMsg');
+                    const submitBtn = Utils.id('registerSubmitBtn');
+
+                    if (!email || !password || !confirmPassword) { setStatus(statusEl, 'الرجاء تعبئة جميع الحقول', 'error'); return; }
+                    if (password !== confirmPassword) { setStatus(statusEl, 'كلمتا المرور غير متطابقتين', 'error'); return; }
+                    if (password.length < 6) { setStatus(statusEl, 'كلمة المرور يجب ألا تقل عن 6 أحرف', 'error'); return; }
+                    if (typeof AuthService === 'undefined') { setStatus(statusEl, 'خدمة المصادقة غير متاحة', 'error'); return; }
+
+                    submitBtn.disabled = true;
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'جارٍ إنشاء الحساب...';
+                    setStatus(statusEl, 'جارٍ إنشاء الحساب...', 'loading');
+
+                    const result = await AuthService.signUp(email, password);
+
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+
+                    if (result.success) {
+                        setStatus(statusEl, 'تم إنشاء الحساب بنجاح! إذا كان تأكيد البريد مفعّلاً في مشروعكم، تحقق من بريدك الإلكتروني.', 'success');
+                        registerForm.reset();
+                    } else {
+                        setStatus(statusEl, result.error, 'error');
+                    }
+                });
+
+                // تسجيل الخروج
+                if (logoutBtn) {
+                    Utils.on(logoutBtn, 'click', async () => {
+                        if (typeof AuthService === 'undefined') return;
+                        logoutBtn.disabled = true;
+                        const result = await AuthService.signOut();
+                        logoutBtn.disabled = false;
+                        if (!result.success) {
+                            alert('تعذر تسجيل الخروج: ' + result.error);
+                        }
+                    });
+                }
             },
 
             setupTheme() {
@@ -6870,10 +7674,10 @@
                 const resetBtn = Utils.id('resetAppBtn');
                 Utils.on(resetBtn, 'click', () => {
                     if (confirm(
-                            'سيتم حذف جميع البيانات الموجودة داخل التطبيق بشكل نهائي.\nلن يتم حذف:\n- مفاتيح Gemini\n- نموذج Gemini المختار\n- إعدادات Gemini\n\nهل تريد المتابعة؟'
+                            'سيتم حذف جميع البيانات الموجودة داخل التطبيق بشكل نهائي.\n\nهل تريد المتابعة؟'
                             )) {
                         FinancialEngine.resetApp();
-                        alert('تم إعادة ضبط التطبيق بنجاح. تم الاحتفاظ بمفاتيح Gemini.');
+                        alert('تم إعادة ضبط التطبيق بنجاح.');
                         this.renderAll();
                     }
                 });
@@ -6972,109 +7776,6 @@
                 });
             },
 
-            setupGeminiModal() {
-                const modalId = 'geminiModal';
-                this.setupModalClose(modalId, 'closeGeminiModal');
-                const trigger = Utils.id('geminiSecretTrigger');
-                const form = Utils.id('geminiSettingsForm');
-                const keyInput = Utils.id('geminiKeyInput');
-                const addBtn = Utils.id('addKeyBtn');
-                const toggleVisBtn = Utils.id('toggleKeysVisibility');
-                const keysList = Utils.id('keysList');
-                const keyCounter = Utils.id('keyCounter');
-                const activeDisplay = Utils.id('activeKeyDisplay');
-                const status = Utils.id('geminiStatus');
-                const modelSelect = Utils.id('geminiModel');
-                let showKeys = false;
-
-                const renderKeys = () => {
-                    const keys = Storage.getGeminiKeys();
-                    const currentIndex = Storage.getGeminiKeyIndex();
-                    const activeKey = keys.length > 0 ? keys[currentIndex % keys.length] : null;
-                    keysList.innerHTML = keys.map((k, i) => {
-                        const isActive = i === (currentIndex % keys.length);
-                        const displayKey = showKeys ? k : k.substring(0, 8) + '••••••••' + k.substring(k
-                            .length - 4);
-                        return '<div class="key-item"><span class="key-index">#' + (i + 1) +
-                            '</span><span class="key-text">' + displayKey +
-                            '</span><span class="key-status ' + (isActive ? 'active' : 'inactive') +
-                            '">' + (isActive ? 'نشط' : '') +
-                            '</span><button class="btn-remove" data-index="' + i +
-                            '"><i class="fas fa-times"></i></button></div>';
-                    }).join('');
-                    keyCounter.textContent = keys.length + ' / 12 مفتاح';
-                    activeDisplay.textContent = activeKey ? (showKeys ? activeKey : activeKey.substring(0,
-                        8) + '••••••••' + activeKey.substring(activeKey.length - 4)) :
-                        'لا يوجد مفتاح نشط';
-                    Utils.qsa('.btn-remove').forEach(btn => {
-                        Utils.on(btn, 'click', () => {
-                            const idx = parseInt(btn.dataset.index);
-                            const keysArr = Storage.getGeminiKeys();
-                            keysArr.splice(idx, 1);
-                            Storage.setGeminiKeys(keysArr);
-                            if (Storage.getGeminiKeyIndex() >= keysArr.length && keysArr.length >
-                                0) { Storage.setGeminiKeyIndex(0); } else if (keysArr.length ===
-                                0) { Storage.setGeminiKeyIndex(0); }
-                            renderKeys();
-                            updateStatus();
-                        });
-                    });
-                };
-
-                const updateStatus = () => {
-                    const keys = Storage.getGeminiKeys();
-                    if (keys.length === 0) { status.className = 'api-status error';
-                        status.textContent = '⚠️ لا توجد مفاتيح Gemini. أضف مفتاحاً واحداً على الأقل.'; } else { status
-                            .className = 'api-status success';
-                        status.textContent = '✅ ' + keys.length + ' مفتاح محفوظ، يتم التوزيع بشكل دائري.'; }
-                };
-
-                Utils.on(trigger, 'click', () => {
-                    this.openModal(modalId);
-                    const savedModel = Storage.getGeminiModel();
-                    modelSelect.value = savedModel || 'gemini-2.5-pro';
-                    renderKeys();
-                    updateStatus();
-                });
-
-                Utils.on(addBtn, 'click', () => {
-                    const key = keyInput.value.trim();
-                    if (!key) { status.className = 'api-status error';
-                        status.textContent = '⚠️ الرجاء إدخال مفتاح صالح.'; return; }
-                    const keys = Storage.getGeminiKeys();
-                    if (keys.length >= 12) { status.className = 'api-status error';
-                        status.textContent = '⚠️ تم الوصول للحد الأقصى 12 مفتاح.'; return; }
-                    keys.push(key);
-                    Storage.setGeminiKeys(keys);
-                    keyInput.value = '';
-                    renderKeys();
-                    updateStatus();
-                    status.className = 'api-status success';
-                    status.textContent = '✅ تمت إضافة المفتاح بنجاح. (' + keys.length + '/12)';
-                });
-
-                Utils.on(toggleVisBtn, 'click', () => { showKeys = !showKeys;
-                    toggleVisBtn.textContent = showKeys ? 'إخفاء' : 'إظهار';
-                    renderKeys(); });
-
-                Utils.on(form, 'submit', (e) => {
-                    e.preventDefault();
-                    const model = modelSelect.value;
-                    Storage.setGeminiModel(model);
-                    const keys = Storage.getGeminiKeys();
-                    if (keys.length === 0) { status.className = 'api-status error';
-                        status.textContent = '⚠️ يجب إضافة مفتاح واحد على الأقل.'; return; }
-                    if (Storage.getGeminiKeyIndex() >= keys.length) { Storage.setGeminiKeyIndex(0); }
-                    status.className = 'api-status success';
-                    status.textContent = '✅ تم حفظ الإعدادات بنجاح. (' + keys.length + ' مفاتيح، النموذج: ' +
-                        model + ')';
-                    renderKeys();
-                    setTimeout(() => this.closeModal(modalId), 1200);
-                });
-                Utils.on(keyInput, 'keydown', (e) => { if (e.key === 'Enter') { e.preventDefault();
-                        addBtn.click(); } });
-            },
-
             addChatQuickReplies(promptText, options, onSelect) {
                 if (!this.chatMessages) return;
                 const div = document.createElement('div');
@@ -7095,62 +7796,6 @@
                 });
             },
 
-            askInstallmentCount() {
-                const flow = this.installmentFlow;
-                if (!flow) return;
-                const isTabi = flow.provider === 'tabi';
-                const options = isTabi ? [
-                    { label: 'دفعة واحدة', count: 1 },
-                    { label: 'دفعتين', count: 2 },
-                    { label: '3 دفعات', count: 3 },
-                    { label: '4 دفعات', count: 4 }
-                ] : [
-                    { label: '3 دفعات', count: 3 },
-                    { label: '4 دفعات', count: 4 },
-                    { label: '6 أشهر', count: 6 },
-                    { label: '9 أشهر', count: 9 },
-                    { label: '12 شهر', count: 12 },
-                    { label: '24 شهر', count: 24 }
-                ];
-                this.addChatQuickReplies(
-                    `كم عدد الدفعات المناسبة لك؟ (المبلغ الإجمالي: ${Utils.formatCurrency(flow.amount)})`,
-                    options,
-                    (opt) => this.finalizeInstallmentFlow(opt.count)
-                );
-            },
-
-            finalizeInstallmentFlow(count) {
-                const flow = this.installmentFlow;
-                if (!flow) return;
-                const isTabi = flow.provider === 'tabi';
-                const baseName = isTabi ? 'دفع تابي' : 'دفع تمارا';
-                const monthly = Math.round((flow.amount / count) * 100) / 100;
-                const endDate = new Date(WorldTime.now());
-                endDate.setMonth(endDate.getMonth() + count);
-                const endDateStr = endDate.toISOString().split('T')[0];
-                const notes = `إجمالي ${Utils.formatCurrency(flow.amount)} مقسّم على ${count} ${isTabi ? 'دفعة' : 'دفعة/شهر'}`;
-
-                const existingItems = FinancialEngine.getBudgetItems();
-                const sameProviderItems = existingItems.filter(i => i.category === baseName || i.category.startsWith(
-                    baseName + ' ('));
-                let finalName = baseName;
-                if (sameProviderItems.length > 0) {
-                    let n = 2;
-                    while (sameProviderItems.some(i => i.category === `${baseName} (${n})`)) n++;
-                    finalName = `${baseName} (${n})`;
-                }
-                FinancialEngine.addBudgetItem({ name: finalName, category: finalName, budget: monthly,
-                    isReserved: true, endDate: endDateStr, notes });
-                this.addChatMessage(
-                    `✅ تم إضافة طلب جديد "${finalName}": دفعة شهرية ${Utils.formatCurrency(monthly)} لمدة ${count} ${isTabi ? 'دفعات' : 'أشهر'}، تنتهي في ${Utils.formatDate(endDateStr)}. تم حجزها تلقائياً من المتاح للصرف.` +
-                    (sameProviderItems.length > 0 ?
-                        `\nملاحظة: لديك ${sameProviderItems.length} طلب/طلبات سابقة بنفس المزود، تقدر تراجعها في صفحة تنظيم الميزانية.` :
-                        ''),
-                    'system');
-                this.installmentFlow = null;
-                this.renderAll();
-            },
-
             setupChat() {
                 const messagesContainer = Utils.id('chatMessages');
                 const input = Utils.id('chatInput');
@@ -7161,52 +7806,9 @@
                     if (!text) return;
                     const normalizedText = ExpenseParser.normalizeDigits(text);
 
-                    if (this.installmentFlow && this.installmentFlow.step === 'awaiting_amount') {
-                        const amountMatch = normalizedText.match(/[\d.]+/);
-                        this.addChatMessage(text, 'user');
-                        input.value = '';
-                        input.style.height = 'auto';
-                        if (amountMatch) {
-                            this.installmentFlow.amount = parseFloat(amountMatch[0]);
-                            this.installmentFlow.step = null;
-                            this.askInstallmentCount();
-                        } else {
-                            this.addChatMessage('لم أفهم المبلغ، الرجاء كتابة رقم المشتريات بالريال فقط.',
-                                'financial-advisor');
-                        }
-                        return;
-                    }
-
                     this.addChatMessage(text, 'user');
                     input.value = '';
                     input.style.height = 'auto';
-
-                    const mentionsTabi = /تابي|tabby/i.test(text);
-                    const mentionsTamara = /تمارا|tamara/i.test(text);
-                    if ((mentionsTabi || mentionsTamara) && !this.installmentFlow) {
-                        const provider = mentionsTabi ? 'tabi' : 'tamara';
-                        const amountMatch = normalizedText.match(/[\d.]+/);
-                        this.installmentFlow = { provider, amount: amountMatch ? parseFloat(amountMatch[0]) :
-                            null, step: null };
-                        let detectedCount = null;
-                        if (/دفعتين/.test(text)) detectedCount = 2;
-                        else if (/دفعة\s*واحدة/.test(text)) detectedCount = 1;
-                        else {
-                            const numMatch = normalizedText.match(/(\d+)\s*(شهر|أشهر|دفعات|دفعة)/);
-                            if (numMatch) detectedCount = parseInt(numMatch[1]);
-                        }
-                        if (this.installmentFlow.amount && detectedCount) {
-                            this.finalizeInstallmentFlow(detectedCount);
-                        } else if (!this.installmentFlow.amount) {
-                            this.installmentFlow.step = 'awaiting_amount';
-                            this.addChatMessage(
-                                `كم قيمة المشتريات التي تريد تقسيمها عبر ${provider === 'tabi' ? 'تابي' : 'تمارا'}؟`,
-                                'financial-advisor');
-                        } else {
-                            this.askInstallmentCount();
-                        }
-                        return;
-                    }
 
                     if (/أخرى/.test(text) && /(اعرض|عرض|وضح|فصل|فصّل|تفاصيل|شو فيها|ايش فيها|إيش فيها)/.test(
                             text)) {
@@ -7975,6 +8577,53 @@
                 }
             },
 
+            buildGroupedItemsHtml(items, todayStr, listPrefix) {
+                const groups = {};
+                const ungrouped = [];
+                items.forEach(item => {
+                    const g = (item.group || '').trim();
+                    if (g) {
+                        if (!groups[g]) groups[g] = [];
+                        groups[g].push(item);
+                    } else {
+                        ungrouped.push(item);
+                    }
+                });
+
+                let html = '';
+                Object.keys(groups).forEach(groupName => {
+                    const members = groups[groupName];
+                    const totalBudget = members.reduce((s, i) => s + (parseFloat(i.budget) || 0), 0);
+                    const totalSpent = members.reduce((s, i) => s + (parseFloat(i.spent) || 0), 0);
+                    const groupSafeId = (listPrefix || 'g') + '_' + groupName.replace(/[^\w\u0600-\u06FF]/g, '_');
+                    html += `<div class="budget-group glass" data-group-name="${groupName}">
+                        <div class="budget-group-header" data-toggle-target="${groupSafeId}">
+                            <div class="budget-group-title"><i class="fas fa-layer-group"></i> ${groupName} <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">(${members.length} تصنيف فرعي)</span></div>
+                            <div class="budget-group-total">
+                                <span style="color:var(--accent);">الإجمالي: ${Utils.formatCurrency(totalBudget)}</span>
+                                <span style="color:var(--danger);">صرف: ${Utils.formatCurrency(totalSpent)}</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                        </div>
+                        <div class="budget-group-members" id="${groupSafeId}">
+                            ${members.map(m => this.buildBudgetItemCardHtml(m, todayStr)).join('')}
+                        </div>
+                    </div>`;
+                });
+                html += ungrouped.map(item => this.buildBudgetItemCardHtml(item, todayStr)).join('');
+                return html;
+            },
+
+            bindBudgetGroupEvents(container) {
+                if (!container) return;
+                container.querySelectorAll('.budget-group-header').forEach(header => {
+                    Utils.on(header, 'click', () => {
+                        const group = header.closest('.budget-group');
+                        if (group) group.classList.toggle('collapsed');
+                    });
+                });
+            },
+
             buildBudgetItemCardHtml(item, todayStr) {
                 const spent = item.spent || 0;
                 const remaining = item.budget - spent;
@@ -8001,6 +8650,24 @@
                     }
                 }
 
+                let paymentRow = '';
+                if (item.isReserved) {
+                    const paidThisMonth = FinancialEngine.getPaymentThisMonth(item);
+                    const hasHistory = Array.isArray(item.paymentHistory) && item.paymentHistory.length > 0;
+                    if (paidThisMonth) {
+                        paymentRow = `<div class="payment-status-row">
+                            <span class="payment-paid-badge">✅ مدفوع بتاريخ ${Utils.formatDate(paidThisMonth.date)}</span>
+                            <button class="payment-undo-btn" data-id="${item.id}">تراجع</button>
+                            ${hasHistory ? `<button class="payment-history-btn" data-id="${item.id}">📜 السجل</button>` : ''}
+                        </div>`;
+                    } else {
+                        paymentRow = `<div class="payment-status-row">
+                            <button class="payment-log-btn" data-id="${item.id}">📌 تسجيل كمدفوع هذا الشهر</button>
+                            ${hasHistory ? `<button class="payment-history-btn" data-id="${item.id}">📜 السجل</button>` : ''}
+                        </div>`;
+                    }
+                }
+
                 return `<div class="budget-item-card glass ${autoClass}" data-id="${item.id}" style="${isOver || isExpired ? 'border-right: 3px solid var(--danger);' : isNearLimit ? 'border-right: 3px solid var(--warning);' : ''}">
                     <div class="item-info">
                         <div class="item-name">${item.name} ${autoBadge} <span style="font-size:0.7rem; color:var(--text-muted);">(${item.category})</span></div>
@@ -8011,6 +8678,7 @@
                             ${expiryBadge}
                             ${item.notes ? `<span>📝 ${item.notes}</span>` : ''}
                         </div>
+                        ${paymentRow}
                     </div>
                     <div class="item-amounts">
                         <span style="color:${isAuto ? 'var(--text-muted)' : 'var(--accent)'};">الميزانية: ${Utils.formatCurrency(item.budget)} ${estimatedBadge}</span>
@@ -8053,6 +8721,27 @@
                         }
                     });
                 });
+                container.querySelectorAll('.payment-log-btn').forEach(btn => {
+                    Utils.on(btn, 'click', (e) => {
+                        e.stopPropagation();
+                        this.openPaymentLogModal(btn.dataset.id);
+                    });
+                });
+                container.querySelectorAll('.payment-undo-btn').forEach(btn => {
+                    Utils.on(btn, 'click', (e) => {
+                        e.stopPropagation();
+                        if (confirm('هل تريد التراجع عن تسجيل الدفعة لهذا الشهر؟')) {
+                            FinancialEngine.undoLastPaymentThisMonth(btn.dataset.id);
+                            this.renderBudgetItems();
+                        }
+                    });
+                });
+                container.querySelectorAll('.payment-history-btn').forEach(btn => {
+                    Utils.on(btn, 'click', (e) => {
+                        e.stopPropagation();
+                        this.openPaymentHistoryModal(btn.dataset.id);
+                    });
+                });
                 container.querySelectorAll('.budget-item-card').forEach(card => {
                     Utils.on(card, 'click', (e) => {
                         if (e.target.closest('button')) return;
@@ -8074,8 +8763,9 @@
                 if (fixedList) {
                     fixedList.innerHTML = fixedItems.length === 0 ?
                         '<div class="empty-state glass"><i class="fas fa-lock"></i><p>لا توجد التزامات ثابتة (إيجار، أقساط، تمارا/تابي...). أضف بنداً وفعّل خيار "محجوز".</p></div>' :
-                        fixedItems.map(item => this.buildBudgetItemCardHtml(item, todayStr)).join('');
+                        this.buildGroupedItemsHtml(fixedItems, todayStr, 'fixed');
                     this.bindBudgetItemCardEvents(fixedList);
+                    this.bindBudgetGroupEvents(fixedList);
                 }
 
                 const toggleBox = Utils.id('budgetOrgToggleBox');
@@ -8113,8 +8803,9 @@
                     } else {
                         orgList.innerHTML = orgItems.length === 0 ?
                             '<div class="empty-state glass"><i class="fas fa-sliders-h"></i><p>لم تُنشئ أي بند تفصيلي بعد. استخدم دليل الإعداد لتحديد ميزانية كل تصنيف دفعة واحدة.</p></div>' :
-                            orgItems.map(item => this.buildBudgetItemCardHtml(item, todayStr)).join('');
+                            this.buildGroupedItemsHtml(orgItems, todayStr, 'org');
                         this.bindBudgetItemCardEvents(orgList);
+                        this.bindBudgetGroupEvents(orgList);
                         if (orgSetupBtnBox) {
                             orgSetupBtnBox.innerHTML = '<button id="openBudgetWizardBtn" class="btn-secondary" style="width:100%;margin-bottom:12px;"><i class="fas fa-magic"></i> دليل إعداد الميزانية (كل التصنيفات دفعة واحدة)</button>';
                             Utils.on(Utils.id('openBudgetWizardBtn'), 'click', () => this.openBudgetWizard());
@@ -8244,23 +8935,87 @@
                 const modalId = 'budgetItemModal';
                 this.setupModalClose(modalId, 'closeBudgetItemModal', 'cancelBudgetItemBtn');
 
+                const installBox = Utils.id('installmentFieldsBox');
+                const installCheckbox = Utils.id('budgetItemIsInstallment');
+                const providerSelect = Utils.id('installmentProvider');
+                const totalAmountInput = Utils.id('installmentTotalAmount');
+                const totalCountInput = Utils.id('installmentTotalCount');
+                const paidCountInput = Utils.id('installmentPaidCount');
+                const summaryBox = Utils.id('installmentSummaryBox');
+                const groupInput = Utils.id('budgetItemGroup');
+                const endDateInput = Utils.id('budgetItemEndDate');
+                const budgetInput = Utils.id('budgetItemBudget');
+                const nameInput = Utils.id('budgetItemName');
+
+                const computeInstallmentSummary = () => {
+                    const total = parseFloat(totalAmountInput.value) || 0;
+                    const count = parseInt(totalCountInput.value) || 0;
+                    const paid = parseInt(paidCountInput.value) || 0;
+                    if (total <= 0 || count <= 0) {
+                        summaryBox.textContent = 'أدخل البيانات أعلاه لعرض ملخص الدفعة الشهرية وتاريخ الانتهاء.';
+                        return null;
+                    }
+                    const remaining = Math.max(count - paid, 0);
+                    const monthly = Math.round((total / count) * 100) / 100;
+                    if (remaining === 0) {
+                        summaryBox.textContent = 'كل الدفعات مسددة بالفعل حسب العدد المُدخل.';
+                        return { monthly, remaining, endDate: null };
+                    }
+                    const endDate = new Date(WorldTime.now());
+                    endDate.setMonth(endDate.getMonth() + remaining);
+                    const endDateStr = endDate.toISOString().split('T')[0];
+                    summaryBox.textContent = `دفعة شهرية ${Utils.formatCurrency(monthly)}، متبقي ${remaining} من ${count} دفعة، تنتهي تقريباً في ${Utils.formatDate(endDateStr)}.`;
+                    return { monthly, remaining, endDate: endDateStr };
+                };
+
+                Utils.on(installCheckbox, 'change', (e) => {
+                    installBox.style.display = e.target.checked ? 'flex' : 'none';
+                    if (e.target.checked) {
+                        if (!groupInput.value.trim()) groupInput.value = 'الأقساط';
+                        computeInstallmentSummary();
+                    }
+                });
+                [totalAmountInput, totalCountInput, paidCountInput].forEach(inp => {
+                    Utils.on(inp, 'input', computeInstallmentSummary);
+                });
+                Utils.on(providerSelect, 'change', () => {
+                    if (!nameInput.value.trim() || nameInput.dataset.autoFilled === 'true') {
+                        nameInput.value = 'دفع ' + providerSelect.value;
+                        nameInput.dataset.autoFilled = 'true';
+                    }
+                });
+
                 const form = Utils.id('budgetItemForm');
                 Utils.on(form, 'submit', (e) => {
                     e.preventDefault();
-                    const name = Utils.id('budgetItemName').value.trim();
+                    let name = nameInput.value.trim();
                     const category = Utils.id('budgetItemCategory').value;
-                    const budget = parseFloat(Utils.id('budgetItemBudget').value) || 0;
+                    const group = groupInput.value.trim() || null;
+                    let budget = parseFloat(budgetInput.value) || 0;
                     const priority = Utils.id('budgetItemPriority').value;
                     const notes = Utils.id('budgetItemNotes').value.trim();
-                    const isReserved = Utils.id('budgetItemReserved').checked;
-                    const endDate = Utils.id('budgetItemEndDate').value || null;
+                    let isReserved = Utils.id('budgetItemReserved').checked;
+                    let endDate = endDateInput.value || null;
+
+                    if (installCheckbox.checked) {
+                        const summary = computeInstallmentSummary();
+                        if (!summary) { alert('الرجاء إدخال المبلغ الإجمالي وعدد الدفعات الكلي لالتزام الأقساط'); return; }
+                        budget = summary.monthly;
+                        isReserved = true;
+                        endDate = summary.endDate;
+                        if (!name) name = 'دفع ' + providerSelect.value;
+                    } else if (budget <= 0) {
+                        alert('الرجاء إدخال الميزانية');
+                        return;
+                    }
+
                     if (!name) { alert('الرجاء إدخال اسم البند'); return; }
                     const id = form.dataset.editId;
                     if (id) {
-                        FinancialEngine.updateBudgetItem(id, { name, category, budget, priority, notes,
+                        FinancialEngine.updateBudgetItem(id, { name, category, group, budget, priority, notes,
                             isReserved, endDate });
                     } else {
-                        FinancialEngine.addBudgetItem({ name, category, budget, priority, notes, isReserved,
+                        FinancialEngine.addBudgetItem({ name, category, group, budget, priority, notes, isReserved,
                             endDate });
                     }
                     this.closeModal(modalId);
@@ -8277,13 +9032,29 @@
                 const cats = Utils.defaultCategories();
                 catSelect.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
 
+                const allItems = FinancialEngine.getBudgetItems();
+                const groupNames = Array.from(new Set(allItems.map(i => i.group).filter(Boolean)));
+                const groupsList = Utils.id('budgetGroupsList');
+                if (groupsList) groupsList.innerHTML = groupNames.map(g => `<option value="${g}"></option>`).join('');
+
+                const installBox = Utils.id('installmentFieldsBox');
+                const installCheckbox = Utils.id('budgetItemIsInstallment');
+                installCheckbox.checked = false;
+                installBox.style.display = 'none';
+                Utils.id('installmentProvider').value = 'تابي';
+                Utils.id('installmentTotalAmount').value = '';
+                Utils.id('installmentTotalCount').value = '';
+                Utils.id('installmentPaidCount').value = 0;
+                Utils.id('installmentSummaryBox').textContent = 'أدخل البيانات أعلاه لعرض ملخص الدفعة الشهرية وتاريخ الانتهاء.';
+                Utils.id('budgetItemName').dataset.autoFilled = 'false';
+
                 if (id) {
-                    const items = FinancialEngine.getBudgetItems();
-                    const item = items.find(i => i.id === id);
+                    const item = allItems.find(i => i.id === id);
                     if (!item) return;
                     title.textContent = 'تعديل بند: ' + item.name;
                     Utils.id('budgetItemName').value = item.name;
                     catSelect.value = item.category;
+                    Utils.id('budgetItemGroup').value = item.group || '';
                     Utils.id('budgetItemBudget').value = item.budget;
                     Utils.id('budgetItemPriority').value = item.priority || 'Medium';
                     Utils.id('budgetItemNotes').value = item.notes || '';
@@ -8293,6 +9064,7 @@
                 } else {
                     title.textContent = 'إضافة بند ميزانية';
                     Utils.id('budgetItemName').value = '';
+                    Utils.id('budgetItemGroup').value = '';
                     Utils.id('budgetItemBudget').value = '';
                     Utils.id('budgetItemPriority').value = 'Medium';
                     Utils.id('budgetItemNotes').value = '';
@@ -8301,6 +9073,51 @@
                     form.dataset.editId = '';
                 }
                 this.openModal(modalId);
+            },
+
+            openPaymentLogModal(itemId) {
+                const items = FinancialEngine.getBudgetItems();
+                const item = items.find(i => i.id === itemId);
+                if (!item) return;
+                Utils.id('paymentLogModalTitle').textContent = 'تسجيل دفعة: ' + item.name;
+                Utils.id('paymentLogDate').value = Utils.today();
+                Utils.id('paymentLogAmount').value = item.budget;
+                Utils.id('paymentLogForm').dataset.itemId = itemId;
+                this.openModal('paymentLogModal');
+            },
+
+            setupPaymentLogModal() {
+                this.setupModalClose('paymentLogModal', 'closePaymentLogModal', 'cancelPaymentLogBtn');
+                const form = Utils.id('paymentLogForm');
+                Utils.on(form, 'submit', (e) => {
+                    e.preventDefault();
+                    const itemId = form.dataset.itemId;
+                    const date = Utils.id('paymentLogDate').value;
+                    const amount = parseFloat(Utils.id('paymentLogAmount').value) || 0;
+                    if (!date) { alert('الرجاء اختيار تاريخ الدفع'); return; }
+                    FinancialEngine.recordItemPayment(itemId, date, amount);
+                    this.closeModal('paymentLogModal');
+                    this.renderBudgetItems();
+                });
+                this.setupModalClose('paymentHistoryModal', 'closePaymentHistoryModal', null);
+            },
+
+            openPaymentHistoryModal(itemId) {
+                const items = FinancialEngine.getBudgetItems();
+                const item = items.find(i => i.id === itemId);
+                if (!item) return;
+                Utils.id('paymentHistoryModalTitle').textContent = 'سجل الدفعات: ' + item.name;
+                const history = Array.isArray(item.paymentHistory) ? [...item.paymentHistory].reverse() : [];
+                const content = Utils.id('paymentHistoryContent');
+                if (history.length === 0) {
+                    content.innerHTML = '<div class="empty-state glass"><i class="fas fa-receipt"></i><p>لا يوجد سجل دفعات بعد لهذا البند.</p></div>';
+                } else {
+                    content.innerHTML = history.map(p => `<div class="expense-item glass">
+                        <div class="expense-info"><div class="desc">${Utils.formatDate(p.date)}</div></div>
+                        <div class="amount">${Utils.formatCurrency(p.amount)}</div>
+                    </div>`).join('');
+                }
+                this.openModal('paymentHistoryModal');
             },
 
             renderTravel() {
@@ -8781,6 +9598,18 @@
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             UI.init();
+
+            // اختبار اتصال Supabase (المرحلة 2) — تسجيل في Console فقط، لا يؤثر على الواجهة
+            if (typeof SupabaseClient !== 'undefined') {
+                SupabaseClient.testConnection().then((result) => {
+                    if (result.success) {
+                        console.log('%c[Supabase] الاتصال بالمشروع ناجح ✅', 'color:#1F7A5C;font-weight:bold;');
+                    } else {
+                        console.error('[Supabase] فشل الاتصال بالمشروع:', result.error);
+                    }
+                });
+            }
+
             let resizeTimeout;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimeout);
